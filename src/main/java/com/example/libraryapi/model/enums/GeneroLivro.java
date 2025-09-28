@@ -8,3 +8,4 @@ public enum GeneroLivro {
     BIOGRAFIA,
     CIENCIA
 }
+/*Enumeração para a o usuário escolher o gênero do livro */

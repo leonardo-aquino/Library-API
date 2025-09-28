@@ -10,13 +10,13 @@ import java.util.UUID;
 
 /* mapeando minha coluna no banco de dados */
 
-@Entity
-@Table(name = "autor", schema = "public")
+@Entity // uma entidade
+@Table(name = "autor", schema = "public") // tabela que se chama autor
 @Getter
 @Setter
-public class Autor {
+public class Autor { // classe Autor
 
-    @Id
+    @Id                          /* meu atributo id vai ser uma chave primária da tabela e vai ser gerado  automaticamente*/
     @Column(name = "id")
     @GeneratedValue(strategy = GenerationType.UUID)
     private UUID id;
@@ -27,10 +27,13 @@ public class Autor {
     @Column(name = "data_nascimento", nullable = false)
     private LocalDate dataNascimento;
 
-    @Column(name = "nascionalidade",length = 50, nullable = false)
-    private String nascionalidade;
+    @Column(name = "nacionalidade",length = 50, nullable = false)
+    private String nacionalidade;
 
     @OneToMany(mappedBy = "autor")  // relacionamento 1 autor pode ter muitos livros/ mappedBy = dentro da entidade Livro, como esta mapeado o autor
 
     private List<Livro> livros; // lista de livros
+
+    @Column
+    private LocalDate DataCadastro;
 }
