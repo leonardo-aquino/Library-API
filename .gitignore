@@ -31,3 +31,24 @@ build/
 
 ### VS Code ###
 .vscode/
+
+# Build
+/target/
+/build/
+
+# IDEs
+/.idea/
+/.vscode/
+*.iml
+
+# Logs
+*.log
+/logs/
+
+# Sistema operacional
+.DS_Store
+Thumbs.db
+
+# Arquivos sensíveis
+application.yml
+application.properties
