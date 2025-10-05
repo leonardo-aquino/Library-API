@@ -1,5 +1,6 @@
 package com.example.libraryapi.repository;
 
+import com.example.libraryapi.model.Autor;
 import com.example.libraryapi.model.Livro;
 import org.springframework.data.jpa.repository.JpaRepository;
 
@@ -11,4 +12,6 @@ public interface LivroRepository extends JpaRepository<Livro, UUID> {
 
     /* Método para procurar o livro no banco de dados pelo titulo, caso ache retorne uma lista com os achados*/
     List<Livro> findByTitulo(String titulo);
+
+    boolean existsByAutor(Autor autor);
 }
