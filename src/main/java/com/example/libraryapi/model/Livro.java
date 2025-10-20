@@ -3,6 +3,7 @@ package com.example.libraryapi.model;
 import com.example.libraryapi.model.enums.GeneroLivro;
 import jakarta.persistence.*;
 import lombok.Data;
+import lombok.ToString;
 
 import java.math.BigDecimal;
 import java.time.LocalDate;
@@ -11,6 +12,7 @@ import java.util.UUID;
 @Entity
 @Table(name = "livro")
 @Data
+@ToString(exclude = "autor")
 public class Livro {
 
     @Id
@@ -18,10 +20,10 @@ public class Livro {
     @GeneratedValue(strategy = GenerationType.UUID)
     private UUID id;
 
-    @Column(name = "isbn", nullable = false, length = 20)
+    @Column(name = "isbn", nullable = false, length = 20, unique = true)
     private String isbn;
 
-    @Column(name = "titulo", nullable = false, length = 50)
+    @Column(name = "titulo", nullable = false, length = 150 )
     private String titulo;
 
     @Column(name = "data_publicacao", nullable = false)

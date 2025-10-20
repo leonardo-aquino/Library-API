@@ -1,14 +1,10 @@
 package com.example.libraryapi.controller;
 
-import com.example.libraryapi.Exeptions.ExitsAutorExeption;
-import com.example.libraryapi.Exeptions.MetodoInvalidExeption;
 import com.example.libraryapi.Service.AutorService;
 import com.example.libraryapi.controller.dto.AutorDto;
-import com.example.libraryapi.controller.dto.ErroResposta;
 import com.example.libraryapi.model.Autor;
-import org.aspectj.weaver.ast.Var;
+import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
@@ -28,9 +24,9 @@ AutorService autorService;
 
     //Salvando um autor
     @PostMapping
-    public ResponseEntity<?> salvar(@RequestBody AutorDto autorDto){
+    public ResponseEntity<?> salvar(@RequestBody @Valid AutorDto autorDto){
        Autor autor = autorDto.transferirDadosAutor();
-       try{
+
            autorService.salvar(autor);
        //construindo a url http://localhost:8080/autores/:id para visualizar no header da request
         URI location = ServletUriComponentsBuilder
@@ -40,11 +36,7 @@ AutorService autorService;
                 .toUri();
 
         return  ResponseEntity.created(location).build();
-       }catch (ExitsAutorExeption e){
 
-           var erroDto =  ErroResposta.conflito(e.getMessage());
-           return ResponseEntity.status(erroDto.status()).body(erroDto);
-       }
     }
 
     // Obtendo dados do autor por Id
@@ -66,7 +58,7 @@ AutorService autorService;
     // deletando um Autor por ID
     @DeleteMapping("{id}")
     public ResponseEntity<Object> deletar(@PathVariable("id") String id){ // recebendo na url o id do Autor
-        try{
+
             var idAutor = UUID.fromString(id); // transformandoo ID em UUID
             Optional<Autor> autor = autorService.obterPorId(idAutor); // verificando se tem algum autor com o id
             if (autor.isPresent()){ // se tiver autor pelo ID então
@@ -75,13 +67,6 @@ AutorService autorService;
             }else{ // se não estiver Autor com ID vairetornar um Not Found
                 return ResponseEntity.notFound().build();
             }
-        }catch (MetodoInvalidExeption e){
-
-            var erroDto = ErroResposta.conflito(e.getMessage());
-            return ResponseEntity.status(erroDto.status()).body(erroDto);
-        }
-
-
     }
 
     // retonar uma lista de DTOs  cujo os parâmetros são nome e nacionalidade ou nome ou nacionalidade
@@ -89,7 +74,7 @@ AutorService autorService;
     @GetMapping
     public ResponseEntity <List<AutorDto>> pesquisar(@RequestParam (value = "nome", required = false) String nome,
                                                     @RequestParam(value = "nacionalidade", required = false) String nacionalidade){
-        List<Autor> resultado = autorService.pesquisa(nome,nacionalidade);
+        List<Autor> resultado = autorService.pesquisaByExample(nome,nacionalidade);
         List<AutorDto> lista = resultado.stream().map(autor -> new AutorDto(autor.getId(),
                 autor.getNome(),
                 autor.getDataNascimento(),      // pegando a strem de Autores que é a lista de resultado
@@ -99,8 +84,7 @@ AutorService autorService;
     }
 
     @PutMapping("{id}")
-    public ResponseEntity<?> atualizar(@PathVariable("id") String id, @RequestBody AutorDto dto){
-        try{
+    public ResponseEntity<?> atualizar(@PathVariable("id") String id, @RequestBody @Valid AutorDto dto){
             var idAutor = UUID.fromString(id);
             Optional<Autor> autorOptional= autorService.obterPorId(idAutor);
             if (autorOptional.isPresent()){
@@ -113,11 +97,6 @@ AutorService autorService;
                 return ResponseEntity.noContent().build();
             }
             return ResponseEntity.notFound().build();               // caso nao ache o autor, retorno um Not Found
-        }catch (ExitsAutorExeption e){
-            var erroDTO = ErroResposta.conflito(e.getMessage());
-            return ResponseEntity.status(erroDTO.status()).body(erroDTO);
-
-        }
     }
 
 }

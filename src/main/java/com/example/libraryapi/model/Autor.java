@@ -3,8 +3,13 @@ package com.example.libraryapi.model;
 import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.Setter;
+import lombok.ToString;
+import org.springframework.cglib.core.Local;
+import org.springframework.data.annotation.LastModifiedDate;
+import org.springframework.data.jpa.domain.support.AuditingEntityListener;
 
 import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.util.List;
 import java.util.UUID;
 
@@ -14,6 +19,8 @@ import java.util.UUID;
 @Table(name = "autor", schema = "public") // tabela que se chama autor
 @Getter
 @Setter
+@ToString(exclude = {"livros"})
+@EntityListeners(AuditingEntityListener.class)
 public class Autor { // classe Autor
 
     @Id                          /* meu atributo id vai ser uma chave primária da tabela e vai ser gerado  automaticamente*/
@@ -31,9 +38,18 @@ public class Autor { // classe Autor
     private String nacionalidade;
 
     @OneToMany(mappedBy = "autor")  // relacionamento 1 autor pode ter muitos livros/ mappedBy = dentro da entidade Livro, como esta mapeado o autor
-
     private List<Livro> livros; // lista de livros
 
-    @Column
-    private LocalDate DataCadastro;
+    @Column(name = "data_cadastro")
+    private LocalDateTime dataCadastro;
+
+    @LastModifiedDate
+    @Column(name = "data_atualizacao")
+    private LocalDateTime dataAtualizacao;
+
+
+    @Column(name = "id_usuario")
+    private UUID idUsuario;
+
+
 }

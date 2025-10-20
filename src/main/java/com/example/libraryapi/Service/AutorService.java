@@ -5,6 +5,8 @@ import com.example.libraryapi.model.Autor;
 import com.example.libraryapi.repository.AutorRepository;
 import com.example.libraryapi.repository.LivroRepository;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Example;
+import org.springframework.data.domain.ExampleMatcher;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -42,18 +44,19 @@ public class AutorService {
 
     // método para retornar uma lista de Autor dependendo do parâmetro passado
     // se não for passado nada vai ser retornado todos
-    public  List<Autor> pesquisa(String nome, String nacionalidade){
-        if(nome!= null && nacionalidade == null){
-            return autorRepository.findByNome(nome);
-        }
-        if(nome== null && nacionalidade != null){
-            return autorRepository.findByNacionalidade(nacionalidade);
-        }
+    //Query By Example
+    public List<Autor> pesquisaByExample(String nome, String nacionalidade){
+        Autor autor = new Autor();
+        autor.setNome(nome);
+        autor.setNacionalidade(nacionalidade);
 
-        if(nome!= null && nacionalidade != null){
-            return  autorRepository.findByNomeAndNacionalidade(nome,nacionalidade);
-        }
-        return autorRepository.findAll();
+        ExampleMatcher matcher = ExampleMatcher
+                .matching()
+                .withIgnoreNullValues()
+                .withIgnoreCase()
+                .withStringMatcher(ExampleMatcher.StringMatcher.CONTAINING);
+        Example<Autor> autorExample = Example.of(autor,matcher);
+        return autorRepository.findAll(autorExample);
     }
 
     // método para atualizar um Autor existente
