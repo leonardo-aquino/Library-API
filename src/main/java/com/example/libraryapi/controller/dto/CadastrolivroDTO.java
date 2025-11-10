@@ -24,15 +24,7 @@ public record CadastrolivroDTO(
         GeneroLivro genero,
         BigDecimal preco,
         @NotNull(message = "Campo Obrigatório")
-        UUID id_autor) {
+        UUID idAutor) {
 
-    public Livro mapear(){
-        Livro livro = new Livro();
-        livro.setIsbn(isbn);
-        livro.setTitulo(titulo);
-        livro.setDataPublicacao(dataPublicacao);
-        livro.setGenero(genero);
-        livro.setPreco(preco);
-       return null;
-    }
+
 }

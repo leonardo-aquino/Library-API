@@ -1,13 +1,14 @@
 package com.example.libraryapi.controller;
 
-import com.example.libraryapi.Service.AutorService;
+import com.example.libraryapi.service.AutorService;
+import com.example.libraryapi.controller.common.Location;
 import com.example.libraryapi.controller.dto.AutorDto;
+import com.example.libraryapi.controller.mapper.AutorMapper;
 import com.example.libraryapi.model.Autor;
 import jakarta.validation.Valid;
-import org.springframework.beans.factory.annotation.Autowired;
+import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
-import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 
 import java.net.URI;
 import java.util.List;
@@ -17,23 +18,22 @@ import java.util.stream.Collectors;
 
 @RestController
 @RequestMapping("/autores")
-public class AutorController {
+@RequiredArgsConstructor // anotação para injetar no construtor os atributos com final
+public class AutorController implements Location{
 
- @Autowired
-AutorService autorService;
+
+private final AutorService autorService;
+private final AutorMapper mapper;
+
 
     //Salvando um autor
     @PostMapping
-    public ResponseEntity<?> salvar(@RequestBody @Valid AutorDto autorDto){
-       Autor autor = autorDto.transferirDadosAutor();
-
+    public ResponseEntity<?> salvar(@RequestBody @Valid AutorDto dto){
+       Autor autor = mapper.toEntity(dto);
            autorService.salvar(autor);
-       //construindo a url http://localhost:8080/autores/:id para visualizar no header da request
-        URI location = ServletUriComponentsBuilder
-                .fromCurrentRequest()
-                .path("{/id}").
-                buildAndExpand(autor.getId())
-                .toUri();
+
+       //construindo a url http://localhost:8080/autores/:id para visualizar no header da response
+        URI location = location(autor.getId());
 
         return  ResponseEntity.created(location).build();
 
@@ -46,10 +46,7 @@ AutorService autorService;
        Optional<Autor> autor = autorService.obterPorId(Uuid); // recebendo um Optional
        if(autor.isPresent()){ // se estiver alguma coisa no autor então
            Autor entidade = autor.get(); // Autor entidade vai receber o que esta dentro do autor
-           AutorDto dto = new AutorDto(entidade.getId(), // passando para o dto as informações que eu quero dar de resposta
-                   entidade.getNome(),
-                   entidade.getDataNascimento(),
-                   entidade.getNacionalidade());
+           AutorDto dto = mapper.toDTO(entidade);
            return ResponseEntity.ok(dto);
        }
        return ResponseEntity.notFound().build(); // e se nao achar nada, vai retornar um notFound
@@ -75,11 +72,8 @@ AutorService autorService;
     public ResponseEntity <List<AutorDto>> pesquisar(@RequestParam (value = "nome", required = false) String nome,
                                                     @RequestParam(value = "nacionalidade", required = false) String nacionalidade){
         List<Autor> resultado = autorService.pesquisaByExample(nome,nacionalidade);
-        List<AutorDto> lista = resultado.stream().map(autor -> new AutorDto(autor.getId(),
-                autor.getNome(),
-                autor.getDataNascimento(),      // pegando a strem de Autores que é a lista de resultado
-                autor.getNacionalidade())       // transformando em uma strem de AutorDto
-                ).collect(Collectors.toList()); // transformando a strem do Dto em uma lista
+        List<AutorDto> lista = resultado.stream()
+                .map(mapper::toDTO).collect(Collectors.toList());
       return ResponseEntity.ok(lista);
     }
 

@@ -21,12 +21,4 @@ public record AutorDto( UUID id,
                        String nacionalidade) {
 
 
-    public Autor transferirDadosAutor(){
-        Autor autor = new Autor();
-        autor.setNome(this.nome);
-        autor.setDataNascimento(this.dataNascimento);
-        autor.setNacionalidade(this.nacionalidade);
-        return autor;
-    }
-
 }

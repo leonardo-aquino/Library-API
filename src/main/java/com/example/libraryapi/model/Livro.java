@@ -4,9 +4,12 @@ import com.example.libraryapi.model.enums.GeneroLivro;
 import jakarta.persistence.*;
 import lombok.Data;
 import lombok.ToString;
+import org.springframework.data.annotation.CreatedDate;
+import org.springframework.data.annotation.LastModifiedDate;
 
 import java.math.BigDecimal;
 import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.util.UUID;
 
 @Entity
@@ -44,4 +47,16 @@ public class Livro {
     como aqui é um relacionamento de um autor pode ter varios livros entao colocamos
     ManytoOne = 1 ou mais livros para 1 autor
      */
+
+    @CreatedDate
+    @Column(name = "data_cadastro")
+    private LocalDateTime dataCadastro;
+
+    @LastModifiedDate
+    @Column(name = "data_atualizacao")
+    private LocalDateTime dataAtualizacao;
+
+
+    @Column(name = "id_usuario")
+    private UUID idUsuario;
 }

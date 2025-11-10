@@ -1,6 +1,6 @@
-package com.example.libraryapi.Service;
-import com.example.libraryapi.Exeptions.MetodoInvalidExeption;
-import com.example.libraryapi.Validator.AutorValidator;
+package com.example.libraryapi.service;
+import com.example.libraryapi.exeptions.MetodoInvalidExeption;
+import com.example.libraryapi.validator.AutorValidator;
 import com.example.libraryapi.model.Autor;
 import com.example.libraryapi.repository.AutorRepository;
 import com.example.libraryapi.repository.LivroRepository;

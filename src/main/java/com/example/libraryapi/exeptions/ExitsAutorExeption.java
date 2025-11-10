@@ -1,4 +1,4 @@
-package com.example.libraryapi.Exeptions;
+package com.example.libraryapi.exeptions;
 
 public class ExitsAutorExeption extends RuntimeException {
     public ExitsAutorExeption(String msg){

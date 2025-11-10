@@ -1,6 +1,6 @@
-package com.example.libraryapi.Validator;
+package com.example.libraryapi.validator;
 
-import com.example.libraryapi.Exeptions.ExitsAutorExeption;
+import com.example.libraryapi.exeptions.ExitsAutorExeption;
 import com.example.libraryapi.model.Autor;
 import com.example.libraryapi.repository.AutorRepository;
 import org.springframework.beans.factory.annotation.Autowired;
