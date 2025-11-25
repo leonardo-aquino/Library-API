@@ -12,6 +12,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
 import java.net.URI;
@@ -29,6 +30,7 @@ public class LivroController implements Location {
     private final LivroMapper mapper;
 
     @PostMapping
+    @PreAuthorize("hasAnyRole('OPERADOR', 'GERENTE')")
     public ResponseEntity<Object> salvar (@RequestBody @Valid CadastrolivroDTO cadastrolivroDTO){
         Livro livro = mapper.toEntity(cadastrolivroDTO);
         livroService.salvarLivro(livro);
@@ -38,6 +40,7 @@ public class LivroController implements Location {
 
 
     @GetMapping("{id}")
+    @PreAuthorize("hasAnyRole('OPERADOR', 'GERENTE')")
     public ResponseEntity<Object> obterPorId(@PathVariable("id") String id){
         UUID uuid = UUID.fromString(id);
         Optional<Livro> livro =livroService.obterLivro(uuid);
@@ -50,6 +53,7 @@ public class LivroController implements Location {
     }
 
     @DeleteMapping("{id}")
+    @PreAuthorize("hasAnyRole('OPERADOR', 'GERENTE')")
     public ResponseEntity<String> deletarLivro (@PathVariable("id") String id){
         if (livroService.existById(UUID.fromString(id))){
             livroService.deletarLivro(UUID.fromString(id));
@@ -59,6 +63,7 @@ public class LivroController implements Location {
     }
 
     @GetMapping
+    @PreAuthorize("hasAnyRole('OPERADOR', 'GERENTE')")
     public  ResponseEntity<Page<ResultadoPesquisaLivroDTO>> pesquisa(@RequestParam (value = "isbn", required = false) String isbn
                                                           , @RequestParam (value = "titulo",required = false) String titulo,
                                                                      @RequestParam (value = "nome-autor", required = false) String nomeAutor,
@@ -75,6 +80,7 @@ public class LivroController implements Location {
     }
 
     @PutMapping("{id}")
+    @PreAuthorize("hasAnyRole('OPERADOR', 'GERENTE')")
     public ResponseEntity<Object> atualizar (@PathVariable ("id") String id,
                                              @Valid @RequestBody CadastrolivroDTO dto ){
         /*pegando o id passado pela url

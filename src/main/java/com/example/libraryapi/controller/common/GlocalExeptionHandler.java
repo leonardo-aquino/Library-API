@@ -5,8 +5,10 @@ import com.example.libraryapi.exeptions.ExitsAutorExeption;
 import com.example.libraryapi.exeptions.MetodoInvalidExeption;
 import com.example.libraryapi.controller.dto.ErroCampo;
 import com.example.libraryapi.controller.dto.ErroResposta;
+import com.sun.jdi.request.DuplicateRequestException;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.AccessDeniedException;
 import org.springframework.validation.FieldError;
 import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
@@ -52,20 +54,32 @@ public class GlocalExeptionHandler {
         return ResponseEntity.status(erroDto.status()).body(erroDto);
     }
 
-    @ExceptionHandler(RuntimeException.class)
-    public ResponseEntity<Object> erroNaoTratado(RuntimeException e){
-       return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("Entre em contato com o Servidor");
+    @ExceptionHandler(DuplicateRequestException.class)
+    public ResponseEntity<Object> DuplicateRequestException(DuplicateRequestException e){
+        return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(e.getMessage());
     }
-
-
 
     @ExceptionHandler(CampoInvalidExeption.class)
     public ResponseEntity<Object> PrecoExeption( CampoInvalidExeption e){
         ErroResposta erroDto = new ErroResposta(HttpStatus.UNPROCESSABLE_ENTITY.value(),
                 e.getMessage(),
                 List.of(new ErroCampo(e.getCampo(),"preço está null")));
-       return ResponseEntity.status(erroDto.status()).body(erroDto);
+        return ResponseEntity.status(erroDto.status()).body(erroDto);
     }
+
+    @ExceptionHandler(AccessDeniedException.class)
+    @ResponseStatus(HttpStatus.FORBIDDEN)
+    public ErroResposta handleAccesDeniedException (AccessDeniedException e){
+        return new ErroResposta(HttpStatus.FORBIDDEN.value(), "Acesso Negado",List.of());
+    }
+
+
+
+    @ExceptionHandler(RuntimeException.class)
+    public ResponseEntity<Object> erroNaoTratado(RuntimeException e){
+       return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("Entre em contato com o Servidor");
+    }
+
 
 
 }

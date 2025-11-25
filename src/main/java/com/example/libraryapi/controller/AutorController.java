@@ -8,6 +8,7 @@ import com.example.libraryapi.model.Autor;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
 import java.net.URI;
@@ -28,6 +29,7 @@ private final AutorMapper mapper;
 
     //Salvando um autor
     @PostMapping
+    @PreAuthorize("hasRole('GERENTE')")
     public ResponseEntity<?> salvar(@RequestBody @Valid AutorDto dto){
        Autor autor = mapper.toEntity(dto);
            autorService.salvar(autor);
@@ -41,6 +43,7 @@ private final AutorMapper mapper;
 
     // Obtendo dados do autor por Id
     @GetMapping("{id}")
+    @PreAuthorize("hasAnyRole('OPERADOR', 'GERENTE')")
     public ResponseEntity<AutorDto> obter(@PathVariable("id") String id){ // recebendo pela url o id do autor
         UUID Uuid  = UUID.fromString(id); // transfromando o id em UUID
        Optional<Autor> autor = autorService.obterPorId(Uuid); // recebendo um Optional
@@ -54,6 +57,7 @@ private final AutorMapper mapper;
 
     // deletando um Autor por ID
     @DeleteMapping("{id}")
+    @PreAuthorize("hasRole('GERENTE')")
     public ResponseEntity<Object> deletar(@PathVariable("id") String id){ // recebendo na url o id do Autor
 
             var idAutor = UUID.fromString(id); // transformandoo ID em UUID
@@ -69,6 +73,7 @@ private final AutorMapper mapper;
     // retonar uma lista de DTOs  cujo os parâmetros são nome e nacionalidade ou nome ou nacionalidade
     // @required false = não é obrigatorio passar esses parâmetros
     @GetMapping
+    @PreAuthorize("hasAnyRole('OPERADOR', 'GERENTE')")
     public ResponseEntity <List<AutorDto>> pesquisar(@RequestParam (value = "nome", required = false) String nome,
                                                     @RequestParam(value = "nacionalidade", required = false) String nacionalidade){
         List<Autor> resultado = autorService.pesquisaByExample(nome,nacionalidade);
@@ -78,6 +83,7 @@ private final AutorMapper mapper;
     }
 
     @PutMapping("{id}")
+    @PreAuthorize("hasRole('GERENTE')")
     public ResponseEntity<?> atualizar(@PathVariable("id") String id, @RequestBody @Valid AutorDto dto){
             var idAutor = UUID.fromString(id);
             Optional<Autor> autorOptional= autorService.obterPorId(idAutor);
