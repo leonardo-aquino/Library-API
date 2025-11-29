@@ -6,3 +6,4 @@ esse projeto é um crud implementado por mim onde a documentação dessa API foi
 Uma api de livraria cujo temos duas entidades Autor e Livro, onde temos um relacionamento "um pra muitos", cujo Autor pode cadastrar um ou varios livros.
 Por ser uma API RestFul estou seguindo os conceitos de SOLID e alguns conceitos que Leonard Richardson disse que precisava para ser considerado uma API RestFul.
 Utilização dos Métodos HTTP corretamente, e utilização básica do Spring Security.
+Arquitetura ultilizada : MVC
