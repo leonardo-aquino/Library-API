@@ -1,5 +1,7 @@
 package com.example.libraryapi.service;
 import com.example.libraryapi.exeptions.MetodoInvalidExeption;
+import com.example.libraryapi.model.Usuario;
+import com.example.libraryapi.security.SecurityService;
 import com.example.libraryapi.validator.AutorValidator;
 import com.example.libraryapi.model.Autor;
 import com.example.libraryapi.repository.AutorRepository;
@@ -9,6 +11,7 @@ import org.springframework.data.domain.Example;
 import org.springframework.data.domain.ExampleMatcher;
 import org.springframework.stereotype.Service;
 
+import javax.xml.validation.Validator;
 import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
@@ -22,10 +25,15 @@ public class AutorService {
     private AutorValidator validator;
     @Autowired
     private LivroRepository livroRepository;
+    @Autowired
+    private  SecurityService securityService;
+
 
     //Método para salvar um Autor no Banco de Dados
     public Autor salvar(Autor autor){
         validator.validar(autor);
+        Usuario usuario = securityService.obterUsuarioPorLogin();
+        autor.setUsuario(usuario);
         return autorRepository.save(autor);
     }
 
@@ -64,7 +72,7 @@ public class AutorService {
         if(autor.getId() == null){
             throw new IllegalArgumentException("Para atualizar é necessario que o autor esteja cadastrado na base!");
         }
-        validator.validar(autor);
+
         autorRepository.save(autor);
     }
 

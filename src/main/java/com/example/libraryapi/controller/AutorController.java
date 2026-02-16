@@ -1,14 +1,20 @@
 package com.example.libraryapi.controller;
 
+import com.example.libraryapi.model.Usuario;
+import com.example.libraryapi.security.CustomUserDetailsService;
+import com.example.libraryapi.security.SecurityService;
 import com.example.libraryapi.service.AutorService;
 import com.example.libraryapi.controller.common.Location;
 import com.example.libraryapi.controller.dto.AutorDto;
 import com.example.libraryapi.controller.mapper.AutorMapper;
 import com.example.libraryapi.model.Autor;
+import com.example.libraryapi.service.UsuarioService;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.web.bind.annotation.*;
 
 import java.net.URI;
@@ -22,7 +28,6 @@ import java.util.stream.Collectors;
 @RequiredArgsConstructor // anotação para injetar no construtor os atributos com final
 public class AutorController implements Location{
 
-
 private final AutorService autorService;
 private final AutorMapper mapper;
 
@@ -31,8 +36,9 @@ private final AutorMapper mapper;
     @PostMapping
     @PreAuthorize("hasRole('GERENTE')")
     public ResponseEntity<?> salvar(@RequestBody @Valid AutorDto dto){
-       Autor autor = mapper.toEntity(dto);
-           autorService.salvar(autor);
+
+        Autor autor = mapper.toEntity(dto);
+        autorService.salvar(autor);
 
        //construindo a url http://localhost:8080/autores/:id para visualizar no header da response
         URI location = location(autor.getId());

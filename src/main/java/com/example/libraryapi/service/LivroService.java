@@ -1,9 +1,11 @@
 package com.example.libraryapi.service;
 
 import com.example.libraryapi.model.Livro;
+import com.example.libraryapi.model.Usuario;
 import com.example.libraryapi.model.enums.GeneroLivro;
 import com.example.libraryapi.repository.LivroRepository;
 import com.example.libraryapi.repository.specs.LivroSpecs;
+import com.example.libraryapi.security.SecurityService;
 import com.example.libraryapi.validator.LivroValidator;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
@@ -23,11 +25,15 @@ public class LivroService {
     private  LivroRepository livroRepository;
     @Autowired
     private  LivroValidator validator;
+    @Autowired
+    private SecurityService securityService;
 
 
     public Livro salvarLivro(Livro livro){
 
         validator.validar(livro);
+        Usuario usuario = securityService.obterUsuarioPorLogin();
+        livro.setUsuario(usuario);
          return livroRepository.save(livro);
     }
 

@@ -8,6 +8,7 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import java.util.Optional;
+import java.util.UUID;
 
 @Service
 @RequiredArgsConstructor
@@ -29,6 +30,8 @@ public class UsuarioService {
     }
 
     public Optional<Usuario> obterPorLogin(String login){
-       return repository.findByLogin(login);
+       Optional <Usuario> usuario = repository.findByLogin(login);
+       if (usuario.isPresent()) return usuario;
+       return null;
     }
 }

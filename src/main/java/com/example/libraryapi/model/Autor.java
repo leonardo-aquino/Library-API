@@ -4,6 +4,7 @@ import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.Setter;
 import lombok.ToString;
+import org.hibernate.annotations.CreationTimestamp;
 import org.springframework.cglib.core.Local;
 import org.springframework.data.annotation.LastModifiedDate;
 import org.springframework.data.jpa.domain.support.AuditingEntityListener;
@@ -40,6 +41,8 @@ public class Autor { // classe Autor
     @OneToMany(mappedBy = "autor")  // relacionamento 1 autor pode ter muitos livros/ mappedBy = dentro da entidade Livro, como esta mapeado o autor
     private List<Livro> livros; // lista de livros
 
+
+    @CreationTimestamp
     @Column(name = "data_cadastro")
     private LocalDateTime dataCadastro;
 
@@ -48,8 +51,9 @@ public class Autor { // classe Autor
     private LocalDateTime dataAtualizacao;
 
 
-    @Column(name = "id_usuario")
-    private UUID idUsuario;
+    @ManyToOne()
+    @JoinColumn(name = "usuário")
+    private Usuario usuario;
 
 
 }
